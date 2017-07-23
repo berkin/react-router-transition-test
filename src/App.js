@@ -1,106 +1,79 @@
 import React, {
 	Component
 } from 'react';
+import { Route, Link } from 'react-router-dom'
+import AnimatedWrapper from "./AnimatedWrapper";
 import {
-	BrowserRouter as Router,
-	Route,
-	Switch,
-	Link
-} from 'react-router-dom';
-import { RouteTransition, presets } from 'react-router-transition';
-import logo from './logo.svg';
-import './App.css';
+	TransitionGroup
+} from 'react-transition-group'
+import './index.css';
 
-const About = () => (
-	<div>
-		<h1>About</h1>
-	</div>
-)
-
-const Topics = () => (
-	<div>
-		<h1>Topics</h1>
-	</div>
-)
-const Home = () => (
-	<div>
-		<h1>Home</h1>
-	</div>
-)
-const style = {
-		background: '#e3e3e3',
-		position: 'absolute',
-		left: 0,
-		right: 0
-	}
-
-class Overlay extends Component {
-	componentDidMount() {
-		console.log('mount')
-	}
-
+class TopicsComponent extends Component {
 	render() {
 		return (
+			<div className="overlay">
+				<h1>Topics</h1>
+				<p>Hello from the topics page!</p>
+		   </div>
+		)
+	}
+}
+const Topics = AnimatedWrapper(TopicsComponent);
 
-			<div style={{
-				position: 'absolute',
-				left: 0,
-				right: 0
-			}}>
-			<h1>Overlay</h1>
-			</div>
+class AboutComponent extends Component {
+	render() {
+		return (
+			<div className="overlay">
+				<h1>About</h1>
+				<p>Hello from the home page!</p>
+		   </div>
+		)
+	}
+}
+const About = AnimatedWrapper(AboutComponent);
+
+class Home extends Component {
+	render() {
+		return (
+			<div className="page">
+				<h1>Home</h1>
+				<p>Hello from the home page!</p>
+		   </div>
 		)
 	}
 }
 
-const ResetPassword1 = () => (
-	<div style={style}>
-		<h1>ResetPassword1</h1>
-		<Link to="/reset-password2">Go</Link>
-	</div>
-)
-const ResetPassword2 = () => (
-	<div style={style}>
-		<h1>ResetPassword2</h1>
-	</div>
-)
+const firstChild = props => {
+	const childrenArray = React.Children.toArray(props.children);
+	return childrenArray[0] || null;
+};
 
 class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<Router>
-					<div>
-						<div className="App-header">
-							<img src={logo} className="App-logo" alt="logo" />
-							<h2>Welcome to React</h2>
-						</div>
-						<Link to="/">Home</Link> {' '}
-						<Link to="/about">About</Link> {' '}
-						<Link to="/topics">Topics</Link> {' '}
-						<Link to="/reset-password">Reset Password</Link>
-						<Route render={({location, history, match}) => {
-							return (
-							<RouteTransition
-								style={{
-									position: 'relative',
-									height: 100,
-								}}
-								pathname={location.pathname}
-								{...presets.slideLeft}
-							>
-								<Route path="/" exact component={Overlay} />
-								<Route path="/reset-password" component={ResetPassword1} />
-								<Route path="/reset-password2" component={ResetPassword2} />
-							</RouteTransition>
-							)
-						}} />
-						<Route path="/" component={Home} exact />
-						<Route path="/about" component={About} />
-						<Route path="/topics" component={Topics} />
-					</div>
-				</Router>
-			</div>
+        <div className="TopBar">
+          <Link to="/">Home</Link> {' '}
+          <Link to="/about">About</Link>
+          <Link to="/topics">Topics</Link>
+		</div>
+		<Route
+		   path="/about"
+		   children={({ match, ...rest }) => (
+			 <TransitionGroup component={firstChild}>
+			   {match && <About {...rest} />}
+			 </TransitionGroup>
+		)}/>
+		 <Route
+		  exact
+		  path="/topics"
+		  children={({ match, ...rest }) => (
+			<TransitionGroup component={firstChild}>
+			  {match && <Topics {...rest} />}
+			</TransitionGroup>
+		)}/>
+		<Route path="/" component={Home} />
+      </div>
 		);
 	}
 }

@@ -6,11 +6,13 @@
     "react-scripts": "1.0.10"
   },
   "dependencies": {
+    "animated": "^0.2.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-motion": "^0.5.0",
     "react-router-dom": "^4.1.2",
-    "react-router-transition": "^0.1.1"
+    "react-router-transition": "^0.1.1",
+    "react-transition-group": "1.x"
   },
   "scripts": {
     "start": "react-scripts start",
