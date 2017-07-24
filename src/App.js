@@ -1,36 +1,43 @@
 import React, {
 	Component
 } from 'react';
-import { Route, Link } from 'react-router-dom'
-import AnimatedWrapper from "./AnimatedWrapper";
+import {
+	Route,
+	Link
+} from 'react-router-dom'
+
 import {
 	TransitionGroup
 } from 'react-transition-group'
+import RouteTransition from './RouteTransition';
 import './index.css';
 
-class TopicsComponent extends Component {
+class Topics extends Component {
 	render() {
 		return (
 			<div className="overlay">
+				<Link to="/"> x Close</Link>
 				<h1>Topics</h1>
 				<p>Hello from the topics page!</p>
+				<Link to="/about">Back</Link>
 		   </div>
 		)
 	}
 }
-const Topics = AnimatedWrapper(TopicsComponent);
 
-class AboutComponent extends Component {
+class About extends Component {
 	render() {
 		return (
 			<div className="overlay">
+				<Link to="/"> x Close</Link>
 				<h1>About</h1>
-				<p>Hello from the home page!</p>
+				<p>Hello from the about page!</p>
+				<Link to="/"> Back</Link> {' '}
+				<Link to="/topics"> Topics</Link>
 		   </div>
 		)
 	}
 }
-const About = AnimatedWrapper(AboutComponent);
 
 class Home extends Component {
 	render() {
@@ -43,37 +50,26 @@ class Home extends Component {
 	}
 }
 
-const firstChild = props => {
-	const childrenArray = React.Children.toArray(props.children);
-	return childrenArray[0] || null;
-};
 
 class App extends Component {
 	render() {
 		return (
 			<div className="App">
-        <div className="TopBar">
-          <Link to="/">Home</Link> {' '}
-          <Link to="/about">About</Link>
-          <Link to="/topics">Topics</Link>
-		</div>
-		<Route
-		   path="/about"
-		   children={({ match, ...rest }) => (
-			 <TransitionGroup component={firstChild}>
-			   {match && <About {...rest} />}
-			 </TransitionGroup>
-		)}/>
-		 <Route
-		  exact
-		  path="/topics"
-		  children={({ match, ...rest }) => (
-			<TransitionGroup component={firstChild}>
-			  {match && <Topics {...rest} />}
-			</TransitionGroup>
-		)}/>
-		<Route path="/" component={Home} />
-      </div>
+				<div className="TopBar">
+					<Link to="/">Home</Link> {' '}
+					<Link to="/about">About</Link>
+					<Link to="/topics">Topics</Link>
+				</div>
+				<Route path="/" component={Home} />
+				<RouteTransition
+					path="/about"
+					component={About}
+				/>
+				<RouteTransition
+					path="/topics"
+					component={Topics}
+				/>
+			</div>
 		);
 	}
 }
