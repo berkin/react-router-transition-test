@@ -18,7 +18,7 @@ class RouteTransition extends Component {
 			{...overlay}
 			children={({ match, ...rest }) => (
 				<TransitionGroup component={firstChild}>
-				  {match && <WrappedComponent match={match} {...rest} {...overlay} />}
+				  {match && <WrappedComponent {...overlay} {...rest} />}
 				</TransitionGroup>
 			)}
 		/>

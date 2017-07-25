@@ -11,7 +11,7 @@ const AnimatedWrapper = WrappedComponent =>
 		constructor(props) {
 			super(props);
 			this.state = {
-				animate: new Animated.Value(0)
+				animate: new Animated.Value(0),
 			};
 		}
 
@@ -25,10 +25,12 @@ const AnimatedWrapper = WrappedComponent =>
 
 		componentWillEnter(cb) {
 			setTimeout(
-				() => Animated.spring(this.state.animate, {
-					toValue: 1
-				}).start(),
-				250
+				() => {
+					Animated.spring(this.state.animate, {
+						toValue: 1
+					}).start();
+				},
+				0
 			);
 			cb();
 		}
@@ -41,15 +43,29 @@ const AnimatedWrapper = WrappedComponent =>
 		}
 
 		render() {
-			const style = {
-				opacity: Animated.template `${this.state.animate}`,
-				transform: Animated.template `
+			let styles = {
+				fromBottom: {
+					opacity: Animated.template `${this.state.animate}`,
+					transform: Animated.template `
 					translate3d(0, ${this.state.animate.interpolate({
 						inputRange: [0, 1],
 						outputRange: ["100%", "0%"]
 					})}, 0)
-				`
-			};
+					`
+				},
+				fromLeft: {
+					opacity: Animated.template `${this.state.animate}`,
+					transform: Animated.template `
+					translate3d(${this.state.animate.interpolate({
+						inputRange: [0, 1],
+						outputRange: ["100%", "0%"]
+					})}, 0, 0)
+					`
+				}
+			}
+
+			const style = styles[this.props.getDirection(this.props.location.pathname, this.props.history.location.pathname)]
+
 			return (
 				<Animated.div style={style} className="animated-page-wrapper">
 					<WrappedComponent {...this.props} />
