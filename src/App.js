@@ -6,6 +6,8 @@ import {
 	Link
 } from 'react-router-dom'
 
+import Overlay from './Overlay';
+
 import {
 	TransitionGroup
 } from 'react-transition-group'
@@ -61,14 +63,16 @@ class App extends Component {
 					<Link to="/topics">Topics</Link>
 				</div>
 				<Route path="/" component={Home} />
-				<RouteTransition
-					path="/about"
-					component={About}
-				/>
-				<RouteTransition
-					path="/topics"
-					component={Topics}
-				/>
+				<Overlay>
+					<RouteTransition
+						path="/about"
+						component={About}
+					/>
+					<RouteTransition
+						path="/topics"
+						component={Topics}
+					/>
+				</Overlay>
 			</div>
 		);
 	}

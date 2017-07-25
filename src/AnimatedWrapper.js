@@ -16,6 +16,7 @@ const AnimatedWrapper = WrappedComponent =>
 		}
 
 		componentWillAppear(cb) {
+			this.props.update(1)
 			Animated.spring(this.state.animate, {
 				toValue: 1
 			}).start();
@@ -43,10 +44,10 @@ const AnimatedWrapper = WrappedComponent =>
 			const style = {
 				opacity: Animated.template `${this.state.animate}`,
 				transform: Animated.template `
-				translate3d(0, ${this.state.animate.interpolate({
-					inputRange: [0, 1],
-					outputRange: ["100%", "0%"]
-				})}, 0)
+					translate3d(0, ${this.state.animate.interpolate({
+						inputRange: [0, 1],
+						outputRange: ["100%", "0%"]
+					})}, 0)
 				`
 			};
 			return (
