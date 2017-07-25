@@ -10,15 +10,15 @@ const firstChild = props => {
 
 class RouteTransition extends Component {
 	render() {
-		const { component: Component, ...rest } = this.props;
+		const { component: Component, ...overlay } = this.props;
 		const WrappedComponent = AnimatedWrapper(Component);
 
 	return (
 		<Route
-			{...rest}
+			{...overlay}
 			children={({ match, ...rest }) => (
 				<TransitionGroup component={firstChild}>
-				  {match && <WrappedComponent {...rest} />}
+				  {match && <WrappedComponent {...overlay} {...rest} />}
 				</TransitionGroup>
 			)}
 		/>
