@@ -7,8 +7,7 @@ import {
 	Link
 } from 'react-router-dom'
 
-import Overlay from './Overlay'
-import RouteTransition from './RouteTransition';
+import { RouteTransition, presets } from './route-transition';
 
 class Topics extends Component {
 	render() {
@@ -70,11 +69,15 @@ class App extends Component {
 					<Link to="/topics">Topics</Link>
 					<Link to="/contact">Contact</Link>
 				</div>
-				<Route exact path="/" component={Home} />
+				<Route path="/" component={Home} />
 				<Route path="/contact" component={Contact} />
 				<Route render={({location, history}) => {
 					return (
-						<Overlay location={location} history={history}>
+						<RouteTransition
+							pathname={location.pathname}
+							runOnMount={false}
+							{...presets.slideLeft}
+						  >
 							<Switch key={location.key} location={location}>
 								<Route
 									path="/about"
@@ -85,7 +88,7 @@ class App extends Component {
 									component={Topics}
 									/>
 							</Switch>
-						</Overlay>
+						</RouteTransition>
 					)
 				}} />
 			</div>

@@ -35,9 +35,17 @@ body {
 	margin: auto;
 }
 .page {
+
     padding: 0 24px;
 }
 
 .overlay {
+	background: #f3f3f3;
+    position: absolute;
+    top: 0;
+    left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
 	padding: 20px;
 }
