@@ -74,7 +74,10 @@ class App extends Component {
 				<Route path="/contact" component={Contact} />
 				<Route render={({location, history}) => {
 					return (
-						<Overlay location={location} history={history}>
+						<Overlay
+							location={location}
+							history={history}
+							className="animated-page-wrapper">
 							<Switch key={location.key} location={location}>
 								<Route
 									path="/about"

@@ -4,6 +4,15 @@ import { TransitionMotion, spring, presets } from 'react-motion';
 
 class Overlay extends Component {
 
+	constructor(props) {
+		super(props);
+		const {children} = this.props;
+		this.items = [];
+		React.Children.forEach(children.props.children,
+ 			child => this.items.push(child.props.path)
+		);
+
+	}
   willEnter = () => {
 	const { history: {action} } = this.props
     return {
@@ -35,12 +44,6 @@ class Overlay extends Component {
   };
 
 	render() {
-		const {children} = this.props;
-		this.items = [];
-		React.Children.forEach(children.props.children,
- 			child => this.items.push(child.props.path)
-		);
-
 		this.direction = 'X';
 		if ( this.items.indexOf(this.props.location.pathname) === -1 ) {
 			this.direction = 'Y';
@@ -68,7 +71,7 @@ class Overlay extends Component {
 
 				 this.items.indexOf(key) !== -1 && <div
 
-				  className="animated-page-wrapper"
+				  className={this.props.className}
                   key={key}
                   style={styles}
                 >
