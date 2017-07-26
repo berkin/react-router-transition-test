@@ -6,11 +6,8 @@ import {
 	Link
 } from 'react-router-dom'
 
-import {
-	TransitionGroup
-} from 'react-transition-group'
+import Overlay from './Overlay'
 import RouteTransition from './RouteTransition';
-import './index.css';
 
 class Topics extends Component {
 	render() {
@@ -50,51 +47,6 @@ class Home extends Component {
 	}
 }
 
-class Overlay extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			isOpen: false,
-			items: []
-		}
-	}
-	componentDidMount() {
-
-		const locations =[];
-		React.Children.forEach(this.props.children,
-			child => locations.push(child.props.path))
-		this.setState({
-			items: locations
-		})
-	}
-	getDirection(location, nextLocation) {
-		let result = 'fromLeft';
-		if ( this.state.items.indexOf(nextLocation) === -1) {
-			this.previousLocation = null;
-			result =  'fromBottom';
-		} else if ( location === nextLocation && !this.previousLocation ) {
-			result =  'fromBottom';
-		}
-
-		if ( location === nextLocation ) {
-			this.previousLocation = location;
-		}
-		return result;
-	}
-
-	render() {
-		const children = React.Children.map(this.props.children,
-			 (child) => React.cloneElement(child, {
-				getDirection: this.getDirection.bind(this)
-			 })
-	    );
-		return (
-			<div>
-				{children}
-			</div>
-		)
-	}
-}
 
 class App extends Component {
 	render() {
@@ -106,16 +58,24 @@ class App extends Component {
 					<Link to="/topics">Topics</Link>
 				</div>
 				<Route path="/" component={Home} />
-				<Overlay>
-					<RouteTransition
-						path="/about"
-						component={About}
-					/>
-					<RouteTransition
-						path="/topics"
-						component={Topics}
-					/>
-				</Overlay>
+				<Route render={({location, history, match}) => {
+					return (
+						<Overlay location={location}>
+							<Route
+								path="/"
+								component={() => null}
+							/>
+							<Route
+								path="/about"
+								component={About}
+							/>
+							<Route
+								path="/topics"
+								component={Topics}
+								/>
+						</Overlay>
+					)
+				}} />
 			</div>
 		);
 	}
