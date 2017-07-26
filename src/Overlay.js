@@ -4,35 +4,18 @@ import { TransitionMotion, spring, presets } from 'react-motion';
 
 class Overlay extends Component {
 
-  state = {
-    transitionDirection: 1
-  };
-
-
-  componentWillReceiveProps({location: {state}}) {
-    const numState = state || 0
-    const _state = this.props.location.state
-    if (numState > _state) {
-      this.setState({transitionDirection: -1})
-    } else {
-      this.setState({transitionDirection: 1})
-    }
-  }
-
   willEnter = () => {
-	const { history } = this.props
-	  const { action } = history
+	const { history: {action} } = this.props
     return {
-      y: action === 'POP' ? -100 : 100,
+		value: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
     }
   };
 
 
   willLeave = () => {
-	const { history } = this.props
-	  const { action } = history
+	const { history:{action} } = this.props
     return {
-      y: action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
+		value: this.direction === 'Y' ? spring(100, presets.stiff) : action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
     }
   };
 
@@ -42,22 +25,30 @@ class Overlay extends Component {
 	const { action } = history;
     return [{
       data: {
-        handler: React.cloneElement(children, {direction: this.state.transitionDirection}),
-        state
+		  handler: children
       },
       style: {
-		  y: spring(0, presets.stiff)
+		  value: spring(0, presets.stiff)
       },
       key: pathname
     }]
   };
 
-
 	render() {
 		const {children} = this.props;
 		this.items = [];
 		React.Children.forEach(children.props.children,
- 			child => this.items.push(child.props.path))
+ 			child => this.items.push(child.props.path)
+		);
+
+		this.direction = 'X';
+		if ( this.items.indexOf(this.props.location.pathname) === -1 ) {
+			this.direction = 'Y';
+		} else if ( this.previousLocation && this.items.indexOf(this.previousLocation) === -1 ) {
+			this.direction = 'Y';
+		}
+
+		this.previousLocation = this.props.location.pathname;
 
 		return (
 
@@ -70,15 +61,16 @@ class Overlay extends Component {
           {styles =>
             <div>
               {styles.map(({key, style, data}) => {
+				  const styles = {
+					  transform: `translate${this.direction}(${style.value}%)`
+				  }
 				  return (
 
 				 this.items.indexOf(key) !== -1 && <div
 
 				  className="animated-page-wrapper"
                   key={key}
-                  style={{
-                    transform: `translateX(${style.y}%)`
-                  }}
+                  style={styles}
                 >
                  {data.handler}
                 </div>
