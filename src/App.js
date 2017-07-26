@@ -2,6 +2,7 @@ import React, {
 	Component
 } from 'react';
 import {
+	Switch,
 	Route,
 	Link
 } from 'react-router-dom'
@@ -17,6 +18,17 @@ class Topics extends Component {
 				<h1>Topics</h1>
 				<p>Hello from the topics page!</p>
 				<Link to="/about">Back</Link>
+		   </div>
+		)
+	}
+}
+
+class Contact extends Component {
+	render() {
+		return (
+			<div className="page">
+				<h1>Contact</h1>
+				<p>Hello from the contact page!</p>
 		   </div>
 		)
 	}
@@ -56,23 +68,23 @@ class App extends Component {
 					<Link to="/">Home</Link> {' '}
 					<Link to="/about">About</Link>
 					<Link to="/topics">Topics</Link>
+					<Link to="/contact">Contact</Link>
 				</div>
-				<Route path="/" component={Home} />
-				<Route render={({location, history, match}) => {
+				<Route exact path="/" component={Home} />
+				<Route path="/contact" component={Contact} />
+				<Route render={({location, history}) => {
 					return (
-						<Overlay location={location}>
-							<Route
-								path="/"
-								component={() => null}
-							/>
-							<Route
-								path="/about"
-								component={About}
-							/>
-							<Route
-								path="/topics"
-								component={Topics}
+						<Overlay location={location} history={history}>
+							<Switch key={location.key} location={location}>
+								<Route
+									path="/about"
+									component={About}
 								/>
+								<Route
+									path="/topics"
+									component={Topics}
+									/>
+							</Switch>
 						</Overlay>
 					)
 				}} />

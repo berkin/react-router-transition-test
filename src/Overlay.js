@@ -8,6 +8,7 @@ class Overlay extends Component {
     transitionDirection: 1
   };
 
+
   componentWillReceiveProps({location: {state}}) {
     const numState = state || 0
     const _state = this.props.location.state
@@ -19,34 +20,33 @@ class Overlay extends Component {
   }
 
   willEnter = () => {
-    const toLeft = this.state.transitionDirection < 0
+	const { history } = this.props
+	  const { action } = history
     return {
-      y: toLeft ? -100 : 100,
+      y: action === 'POP' ? -100 : 100,
     }
   };
 
+
   willLeave = () => {
-    const toLeft = this.state.transitionDirection < 0
+	const { history } = this.props
+	  const { action } = history
     return {
-      y: toLeft ? spring(-100, presets.stiff) : spring(100, presets.stiff),
+      y: action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
     }
   };
 
   getStyles = () => {
-    const { children, location } = this.props
+    const { children, location, history } = this.props
     const { pathname, state } = location
-	let child = null;
-	  children.forEach(item => {
-		  if ( item.props.path === pathname )
-			  child = item;
-	  })
+	const { action } = history;
     return [{
       data: {
-        handler: React.cloneElement(child, {direction: this.state.transitionDirection}),
+        handler: React.cloneElement(children, {direction: this.state.transitionDirection}),
         state
       },
       style: {
-		  y: pathname === '/' ? -100 : spring(0, presets.stiff)
+		  y: spring(0, presets.stiff)
       },
       key: pathname
     }]
@@ -54,7 +54,13 @@ class Overlay extends Component {
 
 
 	render() {
+		const {children} = this.props;
+		this.items = [];
+		React.Children.forEach(children.props.children,
+ 			child => this.items.push(child.props.path))
+
 		return (
+
 
 	  <TransitionMotion
           styles={this.getStyles()}
@@ -63,8 +69,11 @@ class Overlay extends Component {
         >
           {styles =>
             <div>
-              {styles.map(({key, style, data}) =>
-                <div
+              {styles.map(({key, style, data}) => {
+				  return (
+
+				 this.items.indexOf(key) !== -1 && <div
+
 				  className="animated-page-wrapper"
                   key={key}
                   style={{
@@ -73,6 +82,8 @@ class Overlay extends Component {
                 >
                  {data.handler}
                 </div>
+				  )
+			  }
               )}
        		</div>
 		  }
