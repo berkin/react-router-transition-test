@@ -2,23 +2,13 @@ import React, {
 	Component
 } from 'react';
 import {
-	BrowserHistory,
 	Switch,
 	Route,
 	Link
 } from 'react-router-dom'
 
-import { slide }from './presets';
+import { slide } from './presets';
 import Overlay from './Overlay'
-import RouteTransition from './RouteTransition';
-
-const Close = ({ label, to }) => (
-  <Route path={to} children={({ match }) => (
-    <div className={match ? 'active' : ''}>
-      {match ? '> ' : ''}<Link to={to}>{label}</Link>
-    </div>
-  )}/>
-)
 
 class Topics extends Component {
 	render() {

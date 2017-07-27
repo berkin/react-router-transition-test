@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Route, matchPath } from 'react-router-dom'
-import { TransitionMotion, spring, presets } from 'react-motion';
+import { matchPath } from 'react-router-dom'
+import { TransitionMotion } from 'react-motion';
 
 class Overlay extends Component {
 
@@ -65,8 +65,8 @@ class Overlay extends Component {
 	};
 
 	getDefaultStyles = () => {
-		const { children, location, history } = this.props
-		const { pathname, state } = location
+		const { children, location } = this.props
+		const { pathname } = location
 		return [
 			{
 				key: pathname,
@@ -79,8 +79,8 @@ class Overlay extends Component {
 	}
 
 	getStyles = () => {
-		const { children, location, history } = this.props
-		const { pathname, state } = location
+		const { children, location } = this.props
+		const { pathname } = location
 		return [{
 			data: {
 				handler: children
