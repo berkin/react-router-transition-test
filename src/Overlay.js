@@ -10,25 +10,29 @@ class Overlay extends Component {
 		const {children} = this.props;
 		this.items = [];
 		React.Children.forEach(children.props.children,
- 			child => this.items.push(child.props.path)
+			child => this.items.push(child.props)
 		);
 
 		this.willClose = false;
-		this.willOpen = this.items.indexOf(this.props.location.pathname) !== -1;
+		this.willOpen = this.isMatched(this.props.location.pathname);
 
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const isPrevPropsFound = this.items.indexOf(this.props.location.pathname);
-		const isNextPropsFound = this.items.indexOf(nextProps.location.pathname);
+		const isPrevPropsFound = this.isMatched(this.props.location.pathname);
+		const isNextPropsFound = this.isMatched(nextProps.location.pathname);
 		this.willOpen = false;
 		this.willClose = false;
 
-		if ( isPrevPropsFound === -1 && isNextPropsFound !== -1) {
+		if ( !isPrevPropsFound && isNextPropsFound ) {
 			this.willOpen = true;
-		} else if ( isPrevPropsFound !== -1 && isNextPropsFound === -1) {
+		} else if ( isPrevPropsFound && !isNextPropsFound ) {
 			this.willClose = true;
 		}
+	}
+
+	isMatched(pathname) {
+		return this.items.some(item => matchPath(pathname, item))
 	}
 
 
@@ -105,7 +109,7 @@ class Overlay extends Component {
 				  }
 				  return (
 
-				 this.items.indexOf(key) !== -1 && <div
+				 this.isMatched(key) && <div
 
 				  className={this.props.className}
                   key={key}
