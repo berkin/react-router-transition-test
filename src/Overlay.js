@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom'
+import { Route, matchPath } from 'react-router-dom'
 import { TransitionMotion, spring, presets } from 'react-motion';
 
 class Overlay extends Component {
 
+	previousLocation = this.props.location
 	constructor(props) {
 		super(props);
 		const {children} = this.props;
@@ -12,11 +13,34 @@ class Overlay extends Component {
  			child => this.items.push(child.props.path)
 		);
 
+		this.willClose = false;
+		this.willOpen = this.items.indexOf(this.props.location.pathname) !== -1;
+
 	}
+
+	componentWillReceiveProps(nextProps) {
+		const isPrevPropsFound = this.items.indexOf(this.props.location.pathname);
+		const isNextPropsFound = this.items.indexOf(nextProps.location.pathname);
+		this.willOpen = false;
+		this.willClose = false;
+
+		if ( isPrevPropsFound === -1 && isNextPropsFound !== -1) {
+			this.willOpen = true;
+		} else if ( isPrevPropsFound !== -1 && isNextPropsFound === -1) {
+			this.willClose = true;
+		}
+	}
+
+
   willEnter = () => {
 	const { history: {action} } = this.props
+	 /* if ( this.willOpen ) {
+		  return this.props.willOpen
+	  } else {
+		  return this.props.willEnter
+	  } */
     return {
-		value: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
+		offset: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
     }
   };
 
@@ -24,20 +48,35 @@ class Overlay extends Component {
   willLeave = () => {
 	const { history:{action} } = this.props
     return {
-		value: this.direction === 'Y' ? spring(100, presets.stiff) : action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
+		offset: this.direction === 'Y' ? spring(100, presets.stiff) : action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
     }
   };
+
+	getDefaultStyles = () => {
+    const { children, location, history } = this.props
+    const { pathname, state } = location
+    return [
+      {
+        key: pathname,
+		  data: {
+			  handler: children
+		  },
+		  style: {
+			  offset: 100
+		  },
+      },
+    ];
+	}
 
   getStyles = () => {
     const { children, location, history } = this.props
     const { pathname, state } = location
-	const { action } = history;
     return [{
       data: {
 		  handler: children
       },
       style: {
-		  value: spring(0, presets.stiff)
+		  offset: spring(0, presets.stiff)
       },
       key: pathname
     }]
@@ -45,18 +84,15 @@ class Overlay extends Component {
 
 	render() {
 		this.direction = 'X';
-		if ( this.items.indexOf(this.props.location.pathname) === -1 ) {
-			this.direction = 'Y';
-		} else if ( this.previousLocation && this.items.indexOf(this.previousLocation) === -1 ) {
+		if ( this.willOpen || this.willClose ) {
 			this.direction = 'Y';
 		}
-
-		this.previousLocation = this.props.location.pathname;
 
 		return (
 
 
 	  <TransitionMotion
+		  defaultStyles={this.getDefaultStyles()}
           styles={this.getStyles()}
           willEnter={this.willEnter}
           willLeave={this.willLeave}
@@ -65,7 +101,7 @@ class Overlay extends Component {
             <div>
               {styles.map(({key, style, data}) => {
 				  const styles = {
-					  transform: `translate${this.direction}(${style.value}%)`
+					  transform: `translate${this.direction}(${style.offset}%)`
 				  }
 				  return (
 
