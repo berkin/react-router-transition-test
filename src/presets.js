@@ -15,6 +15,10 @@ export const slide = {
 		offsetX: 100,
 		offsetY: 0,
 	},
+	willEnterPop: {
+		offsetX: -100,
+		offsetY: 0,
+	},
 	// will leave to
 	willLeave: {
 		offsetY: 0,

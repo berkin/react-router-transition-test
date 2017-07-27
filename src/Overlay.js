@@ -13,8 +13,8 @@ class Overlay extends Component {
 			child => this.items.push(child.props)
 		);
 
-		this.willMount = false;
-		this.willUnmount = this.isMatched(this.props.location.pathname);
+		this.willMount = this.isMatched(this.props.location.pathname);
+		this.willUnmount = false;
 
 	}
 
@@ -42,23 +42,29 @@ class Overlay extends Component {
 	}
 
 	willEnter = () => {
-		const { history: {action} } = this.props
-		/* if ( this.willOpen ) {
-		  return this.props.willOpen
-	  } else {
-		  return this.props.willEnter
-	  } */
-		return {
-			offset: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
+		const { history: { action } } = this.props
+		if ( this.willMount ) {
+			return this.props.willMount;
+		} else {
+			return this.props.willEnter;
 		}
+		/*	return {
+			offset: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
+		}*/
 	};
 
 
 	willLeave = () => {
 		const { history:{action} } = this.props
+		if ( this.willUnmount ) {
+			return this.props.willUnmount;
+		} else {
+			return this.props.willLeave;
+		}
+		/*
 		return {
 			offset: this.direction === 'Y' ? spring(100, presets.stiff) : action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
-		}
+		}*/
 	};
 
 	getDefaultStyles = () => {
@@ -70,9 +76,7 @@ class Overlay extends Component {
 				data: {
 					handler: children
 				},
-				style: {
-					offset: 100
-				},
+				style: this.willMount ? this.props.willMount : this.props.willEnter,
 			},
 		];
 	}
@@ -84,18 +88,18 @@ class Overlay extends Component {
 			data: {
 				handler: children
 			},
-			style: {
-				offset: spring(0, presets.stiff)
-			},
-			key: pathname
+			style: this.props.atRest,
+			key: pathname,
 		}]
 	};
 
 	render() {
+		/*
 		this.direction = 'X';
 		if ( this.willMount || this.willUnmount ) {
 			this.direction = 'Y';
 		}
+		*/
 
 		return (
 			<TransitionMotion
@@ -107,11 +111,10 @@ class Overlay extends Component {
 			{styles =>
 				<div>
 				{styles.map(({key, style, data}) => {
-					const styles = {
-						transform: `translate${this.direction}(${style.offset}%)`
-					}
+					const styles = this.props.mapStyles(style)
 					return (
-						this.isMatched(key) && <div
+						this.isMatched(key) &&
+						<div
 							className={this.props.className}
 							key={key}
 							style={styles}
