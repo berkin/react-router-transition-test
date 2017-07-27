@@ -3,17 +3,21 @@ const slideConfig = { stiffness: 330, damping: 30 };
 
 export const slide = {
 	willMount: {
+		offsetX: 0,
 		offsetY: 100,
 	},
 	willUnmount: {
+		offsetX: 0,
 		offsetY: spring(100, slideConfig),
 	},
 	// will enter from
 	willEnter: {
 		offsetX: 100,
+		offsetY: 0,
 	},
 	// will leave to
 	willLeave: {
+		offsetY: 0,
 		offsetX: spring(-100, slideConfig),
 	},
 	atRest: {
