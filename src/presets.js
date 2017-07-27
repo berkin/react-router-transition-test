@@ -2,10 +2,10 @@ import { spring } from 'react-motion';
 const slideConfig = { stiffness: 330, damping: 30 };
 
 export const slide = {
-	willOpen: {
+	willMount: {
 		offsetY: 100,
 	},
-	willClose: {
+	willUnmount: {
 		offsetY: spring(100, slideConfig),
 	},
 	// will enter from
