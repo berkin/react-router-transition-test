@@ -24,6 +24,10 @@ export const slide = {
 		offsetY: 0,
 		offsetX: spring(-100, slideConfig),
 	},
+	willLeavePop: {
+		offsetY: 0,
+		offsetX: spring(100, slideConfig),
+	},
 	atRest: {
 		offsetX: spring(0, slideConfig),
 		offsetY: spring(0, slideConfig),

@@ -46,25 +46,22 @@ class Overlay extends Component {
 		if ( this.willMount ) {
 			return this.props.willMount;
 		} else {
-			return this.props.willEnter;
+			return action === 'POP' && this.props.willEnterPop ?
+				this.props.willEnterPop :
+				this.props.willEnter;
 		}
-		/*	return {
-			offset: this.direction === 'Y' ? 100 : action === 'POP' ? -100 : 100,
-		}*/
 	};
 
 
 	willLeave = () => {
-		const { history:{action} } = this.props
+		const { history: { action } } = this.props
 		if ( this.willUnmount ) {
 			return this.props.willUnmount;
 		} else {
-			return this.props.willLeave;
+			return action === 'POP' && this.props.willLeavePop ?
+				this.props.willLeavePop :
+				this.props.willLeave;
 		}
-		/*
-		return {
-			offset: this.direction === 'Y' ? spring(100, presets.stiff) : action === 'PUSH' ? spring(-100, presets.stiff) : spring(100, presets.stiff),
-		}*/
 	};
 
 	getDefaultStyles = () => {
@@ -94,13 +91,6 @@ class Overlay extends Component {
 	};
 
 	render() {
-		/*
-		this.direction = 'X';
-		if ( this.willMount || this.willUnmount ) {
-			this.direction = 'Y';
-		}
-		*/
-
 		return (
 			<TransitionMotion
 				defaultStyles={this.getDefaultStyles()}
