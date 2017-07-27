@@ -7,6 +7,7 @@ class Overlay extends Component {
 	constructor(props) {
 		super(props);
 		const {children} = this.props;
+
 		this.items = [];
 		React.Children.forEach(children.props.children,
 			child => this.items.push(child.props)
@@ -18,27 +19,27 @@ class Overlay extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const isPrevPropsFound = this.isMatched(this.props.location.pathname);
-		const isNextPropsFound = this.isMatched(nextProps.location.pathname);
+		const isPrevPathMatched = this.isMatched(this.props.location.pathname);
+		const isNextPathMatched = this.isMatched(nextProps.location.pathname);
 		this.willMount = false;
 		this.willUnmount = false;
 
-		if ( !isPrevPropsFound && isNextPropsFound ) {
+		if ( !isPrevPathMatched && isNextPathMatched ) {
 			this.willMount = true;
-		} else if ( isPrevPropsFound && !isNextPropsFound ) {
+		} else if ( isPrevPathMatched && !isNextPathMatched ) {
 			this.willUnmount = true;
 		}
+
 		this.previousLocation = this.props.location.pathname
 	}
 
 	shouldComponentUpdate(nextProps) {
-			return nextProps.location.pathname !== this.previousLocation;
+		return nextProps.location.pathname !== this.previousLocation;
 	}
 
 	isMatched(pathname) {
 		return this.items.some(item => matchPath(pathname, item))
 	}
-
 
 	willEnter = () => {
 		const { history: {action} } = this.props
