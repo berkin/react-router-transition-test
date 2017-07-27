@@ -28,6 +28,11 @@ class Overlay extends Component {
 		} else if ( isPrevPropsFound && !isNextPropsFound ) {
 			this.willUnmount = true;
 		}
+		this.previousLocation = this.props.location.pathname
+	}
+
+	shouldComponentUpdate(nextProps) {
+			return nextProps.location.pathname !== this.previousLocation;
 	}
 
 	isMatched(pathname) {
